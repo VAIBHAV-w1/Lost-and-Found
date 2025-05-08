@@ -1,0 +1,168 @@
+{% include "tracker/navbar.html" %}
+<div class="container">
+    <h2>Sign Up</h2>
+
+    {% if form.errors %}
+        <div class="error-msg">
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label for="id_username">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+
+        <label for="id_password1">Password</label>
+        {{ form.password1 }}
+        <ul class="password-help">
+            <li>Your password can’t be too similar to your personal information.</li>
+            <li>Must be at least 8 characters.</li>
+            <li>Can’t be a commonly used password.</li>
+            <li>Can’t be entirely numeric.</li>
+        </ul>
+        {{ form.password1.errors }}
+
+        <label for="id_password2">Confirm Password</label>
+        {{ form.password2 }}
+        {{ form.password2.errors }}
+
+        <button class="btn" type="submit">Register</button>
+    </form>
+
+    <p class="text-link">Already have an account? <a href="{% url 'login' %}">Log in here</a></p>
+</div>
+
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f6fb;
+        color: #333;
+    }
+
+    .container {
+        max-width: 420px;
+        margin: 70px auto;
+        padding: 35px 30px;
+        background: linear-gradient(to bottom right, #ffffff, #e6f0ff);
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #2c3e50;
+        font-size: 2em;
+        margin-bottom: 25px;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border 0.2s ease;
+    }
+
+    input:focus {
+        border-color: #007BFF;
+        outline: none;
+    }
+
+    .btn {
+        background-color: #007BFF;
+        padding: 14px;
+        color: white;
+        border-radius: 8px;
+        width: 100%;
+        border: none;
+        font-weight: bold;
+        font-size: 16px;
+        transition: background 0.3s ease, transform 0.2s ease;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.02);
+    }
+
+    .text-link {
+        text-align: center;
+        margin-top: 10px;
+        font-size: 15px;
+    }
+
+    .text-link a {
+        color: #007BFF;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .text-link a:hover {
+        text-decoration: underline;
+    }
+
+    .error-msg p {
+        color: #e74c3c;
+        background-color: #fceaea;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .password-help {
+        font-size: 14px;
+        margin-top: 5px;
+        margin-left: 15px;
+        color: #555;
+    }
+
+    .password-help li {
+        margin-bottom: 4px;
+    }
+
+    @media (max-width: 500px) {
+        .container {
+            margin: 40px 15px;
+            padding: 25px 20px;
+        }
+
+        h2 {
+            font-size: 1.6em;
+        }
+
+        .btn {
+            font-size: 15px;
+        }
+    }
+</style>

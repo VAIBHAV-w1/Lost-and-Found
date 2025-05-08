@@ -1,0 +1,8 @@
+<!-- tracker/templates/tracker/profile.html -->
+{% include 'tracker/navbar.html' %}
+<div class="container">
+    <h1>{{ user.username }}'s Profile</h1>
+    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px;">
+    <p>Phone: {{ profile.phone_number }}</p>
+    <p>Address: {{ profile.address }}</p>
+</div>

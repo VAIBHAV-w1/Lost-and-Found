@@ -1,0 +1,88 @@
+{% include 'tracker/navbar.html' %}
+<div class="container">
+    <h1>Welcome to Lost & Found Mobile Tracker</h1>
+    <p>Use this system to report or search for lost and found mobile phones.</p>
+    <a class="btn" href="{% url 'report_mobile' %}">Report a Mobile</a>
+    <a class="btn" href="{% url 'search_reports' %}">Search Reports</a>
+</div>
+
+<style>
+    /* General Reset */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Body Styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    /* Container Style */
+    .container {
+        text-align: center;
+        margin-top: 80px;
+        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Heading Styles */
+    h1 {
+        font-size: 2.5em;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Paragraph Style */
+    p {
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 40px;
+    }
+
+    /* Button Styles */
+    .btn {
+        display: inline-block;
+        padding: 15px 30px;
+        font-size: 1.2em;
+        margin: 15px 20px;
+        background-color: #007BFF;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+    }
+
+    .btn:active {
+        background-color: #00408d;
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .container {
+            margin-top: 50px;
+            padding: 15px;
+        }
+
+        h1 {
+            font-size: 2em;
+        }
+
+        .btn {
+            font-size: 1em;
+            padding: 12px 25px;
+        }
+    }
+</style>

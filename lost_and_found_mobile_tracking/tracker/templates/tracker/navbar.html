@@ -1,0 +1,28 @@
+<!-- tracker/templates/tracker/navbar.html -->
+<div class="navbar">
+    {% if user.is_authenticated %}
+        <span>Welcome, {{ user.username }}</span>
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a> | <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+    | <a href="{% url 'report_mobile' %}">Report a Mobile</a>
+    | <a href="{% url 'search_reports' %}">Search Reports</a>
+</div>
+
+<style>
+    .navbar {
+        background-color: #333;
+        color: #fff;
+        padding: 10px 20px;
+        text-align: right;
+    }
+    .navbar a {
+        color: #fff;
+        margin: 0 15px;
+        text-decoration: none;
+    }
+    .navbar a:hover {
+        text-decoration: underline;
+    }
+</style>

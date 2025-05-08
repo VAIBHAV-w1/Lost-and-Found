@@ -1,0 +1,37 @@
+<!-- tracker/templates/tracker/success.html -->
+{% include 'tracker/navbar.html' %}
+<div class="container">
+    <h2>Thank you!</h2>
+    <p>Your report has been submitted successfully.</p>
+
+    {% if report.photo %}
+        <h3>Mobile Photo:</h3>
+        <img src="{{ report.photo.url }}" alt="Mobile Photo" style="max-width: 300px;">
+    {% endif %}
+
+    <a class="btn" href="{% url 'home' %}">Return to Home</a>
+</div>
+
+<style>
+    .container {
+        text-align: center;
+        margin: 50px auto;
+    }
+
+    h2 {
+        color: #28a745;
+        font-size: 1.5em;
+    }
+
+    .btn {
+        background-color: #007BFF;
+        padding: 10px 20px;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>
