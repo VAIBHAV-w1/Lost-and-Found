@@ -34,16 +34,19 @@
     .result-card {
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
-        border-radius: 6px;
-        padding: 20px;
+        border-radius: 8px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .result-card h4 {
         color: var(--text-main);
-        font-size: 1.15rem;
-        margin-bottom: 12px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        line-height: 1.3;
     }
 
     .result-item {
@@ -77,6 +80,19 @@
         border-radius: 6px;
         border: 1px solid var(--border-color);
     }
+
+    .distance-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--accent-primary);
+        background: rgba(59, 130, 246, 0.1);
+        padding: 4px 10px;
+        border-radius: 20px;
+        margin-bottom: 12px;
+    }
 </style>
 {% endblock %}
 
@@ -97,16 +113,23 @@
 
     {% if results %}
         <h3>Recent Reports</h3>
-        <div class="results-grid" style="margin-top: 20px;">
+        <div class="results-grid" style="margin-top: 24px;">
         {% for report in results %}
-            <div class="result-card">
+            <div class="result-card hover-lift animate-fade">
                 <h4>{{ report.title }}</h4>
                 <div class="result-item"><strong>Category:</strong> {{ report.get_category_display }}</div>
                 <div class="result-item">
                     <strong>Report Type:</strong> 
                     <span class="badge {{ report.report_type }}">{{ report.get_report_type_display }}</span>
                 </div>
-                <div class="result-item" style="margin-bottom: 15px;"><strong>Location:</strong> {{ report.location_name }}</div>
+                <div class="result-item" style="margin-bottom: 8px;"><strong>Location:</strong> {{ report.location_name }}</div>
+                
+                {% if report.distance is not None %}
+                <div class="distance-badge">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    {{ report.distance|floatformat:1 }} km away
+                </div>
+                {% endif %}
                 
                 {% if report.photo %}
                 <div style="margin-bottom: 15px; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden;">
@@ -143,6 +166,20 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // Geolocation Logic
+        {% if not has_user_location %}
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const url = new URL(window.location.href);
+                url.searchParams.set('lat', lat);
+                url.searchParams.set('lon', lon);
+                window.location.href = url.toString();
+            });
+        }
+        {% endif %}
+
         const centerLatLng = [20.5937, 78.9629]; // India Center
         const indiaBounds = L.latLngBounds([6.753515, 68.162386], [35.504222, 97.395561]);
         

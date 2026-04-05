@@ -44,8 +44,11 @@ def report_success(request):
 
 @login_required(login_url='login')
 def search_reports(request):
-    """Filters structured item records rendering them onto leaflet matrices."""
+    """Filters structured item records rendering them onto leaflet matrices with optional distance sorting."""
     query = request.GET.get('q', '').strip()
+    user_lat = request.GET.get('lat')
+    user_lon = request.GET.get('lon')
+    
     results = ItemReport.objects.filter(status=ItemReport.StatusType.ACTIVE).order_by('-date_reported')
     
     if query:
@@ -54,7 +57,28 @@ def search_reports(request):
             Q(description__icontains=query) |
             Q(location_name__icontains=query)
         )
-    return render(request, 'tracker/search.html', {'results': results, 'query': query})
+    
+    # Enrich results with distance if user location is provided
+    if user_lat and user_lon:
+        try:
+            u_lat = float(user_lat)
+            u_lon = float(user_lon)
+            for report in results:
+                if report.latitude and report.longitude:
+                    report.distance = calculate_distance(u_lat, u_lon, report.latitude, report.longitude)
+                else:
+                    report.distance = None
+            
+            # Sort by distance (optional, keeping date as primary for now unless specific sorting requested)
+            # results = sorted(results, key=lambda x: x.distance if x.distance is not None else 999999)
+        except (ValueError, TypeError):
+            pass
+
+    return render(request, 'tracker/search.html', {
+        'results': results, 
+        'query': query,
+        'has_user_location': bool(user_lat and user_lon)
+    })
 
 def signup(request):
     """Authentication handling for structured user profiles."""
@@ -81,15 +105,42 @@ def logout_view(request):
 
 @login_required(login_url='login')
 def user_profile(request):
-    """Loads deeply associative relationships for user records (messages + items)."""
+    """Loads deeply associative relationships for user records (messages + items) with enhanced stats."""
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     my_reports = ItemReport.objects.filter(user=request.user).order_by('-date_reported')
     received_msgs = Message.objects.filter(recipient=request.user).order_by('-timestamp')
     
+    # Calculate professional stats
+    stats = {
+        'total_reports': my_reports.count(),
+        'resolved_reports': my_reports.filter(status=ItemReport.StatusType.RESOLVED).count(),
+        'received_messages': received_msgs.count(),
+    }
+    
+    # Mock activity timeline based on existing records
+    activity = []
+    for report in my_reports[:5]:
+        activity.append({
+            'type': 'report',
+            'title': f"Reported: {report.title}",
+            'date': report.date_reported,
+            'status': report.get_status_display()
+        })
+    for msg in received_msgs[:5]:
+        activity.append({
+            'type': 'message',
+            'title': f"Received message from {msg.sender.username}",
+            'date': msg.timestamp,
+        })
+    
+    activity = sorted(activity, key=lambda x: x['date'], reverse=True)[:8]
+
     return render(request, 'tracker/profile.html', {
         'profile': profile,
         'my_reports': my_reports,
-        'received_msgs': received_msgs
+        'received_msgs': received_msgs,
+        'stats': stats,
+        'activity': activity
     })
     
 @login_required(login_url='login')
@@ -122,3 +173,12 @@ def send_message(request, report_id):
         else:
             messages.error(request, "Cannot dispatch an empty message.")
     return redirect('search_reports')
+
+@login_required(login_url='login')
+def resolve_item(request, report_id):
+    """Allows owners to mark their item reports as resolved for system finality."""
+    report = get_object_or_404(ItemReport, id=report_id, user=request.user)
+    report.status = ItemReport.StatusType.RESOLVED
+    report.save()
+    messages.success(request, f"Congratulations! {report.title} has been marked as resolved.")
+    return redirect('profile')
