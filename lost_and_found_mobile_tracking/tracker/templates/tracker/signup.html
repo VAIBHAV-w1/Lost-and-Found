@@ -36,12 +36,14 @@
 
         <label for="id_password1">Password</label>
         {{ form.password1 }}
-        <ul class="helptext">
+        {% if form.errors %}
+        <ul class="helptext text-center" style="list-style: none; padding: 0; font-size: 0.8rem; color: var(--text-muted); margin: 0 0 10px 0;">
             <li>Must be at least 8 characters.</li>
             <li>Can’t be too similar to personal info.</li>
             <li>Can’t be entirely numeric.</li>
             <li>Can’t be a commonly used password.</li>
         </ul>
+        {% endif %}
         {{ form.password1.errors }}
 
         <label for="id_password2">Confirm Password</label>
