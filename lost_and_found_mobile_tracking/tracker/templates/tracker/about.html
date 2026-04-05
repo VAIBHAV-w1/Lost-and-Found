@@ -1,0 +1,35 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}About Us | Lost and Found{% endblock %}
+
+{% block content %}
+<div class="glass-card animate-slide">
+    <div style="text-align: center; margin-bottom: 40px;">
+        <h2 style="font-size: 2.25rem;">Our Mission</h2>
+        <p style="max-width: 600px; margin: 16px auto; font-size: 1.1rem;">
+            Connecting people with their lost belongings through community, technology, and real-time location intelligence.
+        </p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px;">
+        <div>
+            <h3 style="color: var(--accent-primary); margin-bottom: 12px;">Who We Are</h3>
+            <p>
+                The Lost and Found platform was born out of a simple need: a more efficient way to track and recover missing items. We believe that by leveraging modern web technologies like geospatial mapping and real-time messaging, we can significantly increase the chances of happy reunions.
+            </p>
+        </div>
+        <div>
+            <h3 style="color: var(--accent-primary); margin-bottom: 12px;">How It Works</h3>
+            <p>
+                Our system uses precise location pinning and distance-based matching algorithms to notify users of potential matches in their vicinity. Whether it's a smartphone left at a cafe or a set of keys found in the park, our platform bridge the gap between finders and owners.
+            </p>
+        </div>
+    </div>
+
+    <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; margin-top: 50px; text-align: center;">
+        <h3 style="margin-bottom: 12px;">Join Our Community</h3>
+        <p style="margin-bottom: 24px;">Start reporting or searching today to help make your neighborhood a more connected place.</p>
+        <a href="{% url 'report_item' %}" class="btn-primary">Report an Item</a>
+    </div>
+</div>
+{% endblock %}

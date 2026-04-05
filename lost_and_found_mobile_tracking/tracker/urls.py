@@ -13,4 +13,6 @@ urlpatterns = [
     path('profile/', views.user_profile, name='profile'),
     path('message/<int:report_id>/', views.send_message, name='send_message'),
     path('resolve/<int:report_id>/', views.resolve_item, name='resolve_item'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
 ]

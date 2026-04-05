@@ -10,6 +10,7 @@ from .forms import ItemReportForm, CustomUserCreationForm
 from .models import ItemReport, UserProfile, Message
 from .utils import check_for_matches
 
+@login_required(login_url='login')
 def home(request):
     """Renders the standard landing page representing the feature stack."""
     return render(request, 'tracker/home.html')
@@ -34,6 +35,7 @@ def report_item(request):
         form = ItemReportForm()
     return render(request, 'tracker/report_form.html', {'form': form})
 
+@login_required(login_url='login')
 def report_success(request):
     """Secondary dispatch template confirming user submission safely."""
     try:
@@ -182,3 +184,13 @@ def resolve_item(request, report_id):
     report.save()
     messages.success(request, f"Congratulations! {report.title} has been marked as resolved.")
     return redirect('profile')
+
+@login_required(login_url='login')
+def about(request):
+    """Informational view for the platform mission and value proposition."""
+    return render(request, 'tracker/about.html')
+
+@login_required(login_url='login')
+def contact(request):
+    """Informational view for support and contact details."""
+    return render(request, 'tracker/contact.html')
