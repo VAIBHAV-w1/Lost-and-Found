@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Lost & Found</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    
+    
+    <style>
+        :root {
+            /* Dark mode palette */
+            --bg-color: #0d1117;
+            --bg-secondary: #161b22;
+            --text-main: #e6edf3;
+            --text-muted: #8b949e;
+            --accent-primary: #58a6ff;
+            --accent-hover: #1f6feb;
+            --card-bg: rgba(22, 27, 34, 0.7);
+            --border-color: #30363d;
+            --input-bg: #0d1117;
+            --error-color: #f85149;
+            --success-color: #3fb950;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image: radial-gradient(circle at 50% 0%, #1f2937 0%, transparent 70%);
+            background-attachment: fixed;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: 0.5px;
+        }
+
+        .navbar-brand span {
+            color: var(--accent-primary);
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover, .navbar a.active {
+            color: var(--text-main);
+        }
+
+        .navbar .user-info {
+            color: var(--accent-primary);
+            font-weight: 600;
+            margin-right: 15px;
+        }
+
+        /* Glassmorphism Card Wrapper */
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin: 0 auto;
+        }
+        
+        .narrow-card {
+            max-width: 480px;
+        }
+
+        /* Typograpy */
+        h1, h2, h3 {
+            color: var(--text-main);
+            margin-bottom: 20px;
+        }
+
+        h1 { font-size: 2.5rem; font-weight: 700; text-align: center; }
+        h2 { font-size: 2rem; font-weight: 600; text-align: center; }
+        p { color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .text-center { text-align: center; }
+
+        /* Form Controls */
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: -5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(88, 166, 255, 0.2);
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Help texts & links */
+        .text-link {
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 20px;
+        }
+
+        .text-link a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .text-link a:hover {
+            text-decoration: underline;
+        }
+        
+        .error-msg {
+            background-color: rgba(248, 81, 73, 0.1);
+            color: var(--error-color);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(248, 81, 73, 0.2);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+
+        .helptext {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        ul.errorlist {
+            list-style: none;
+            color: var(--error-color);
+            font-size: 0.85rem;
+            margin-top: 4px;
+        }
+
+        /* File inputs */
+        input[type="file"] {
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Map styling overrides for modern look */
+        #map {
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            z-index: 1; /* Keep leaflet under navbar */
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            .navbar-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .glass-card {
+                padding: 25px 20px;
+            }
+            .main-content {
+                padding: 20px 10px;
+            }
+            h1 { font-size: 2rem; }
+            .button-group { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="navbar-brand">Lost<span>&</span>Found</a>
+        
+        <div class="navbar-links">
+            <a href="/report/">Report Item</a>
+            <a href="/search/">Search Items</a>
+            
+            
+                <span class="user-info">Hi, testuser123</span>
+                <a href="/profile/">Profile</a>
+                <a href="/logout/">Logout</a>
+            
+        </div>
+    </nav>
+
+    <div class="main-content">
+        
+<div class="glass-card text-center" style="max-width: 800px;">
+    <h1>Official Lost & Found Platform</h1>
+    <p>A secure and efficient platform to report found items or search for your lost belongings. Featuring smart location tracking, auto-matching algorithms, and direct secure messaging.</p>
+    
+    <div class="button-group" style="margin-top: 30px;">
+        <a class="btn-primary" href="/report/">Report an Item</a>
+        <a class="btn-secondary" href="/search/">Search Lost/Found Items</a>
+    </div>
+</div>
+
+    </div>
+
+    
+</body>
+</html>

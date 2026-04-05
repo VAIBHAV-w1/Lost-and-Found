@@ -1,200 +1,130 @@
-{% include 'tracker/navbar.html' %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Mobile Tracker Dashboard</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #e9eff5;
-    }
+{% extends 'tracker/base.html' %}
 
-    .center {
-      text-align: center;
-      padding-top: 30px;
-      font-size: 32px;
-      font-weight: bold;
-      color: #222;
-    }
+{% block title %}Report Item | Lost and Found{% endblock %}
 
-    a {
-      display: block;
-      text-align: center;
-      margin: 15px 0;
-      text-decoration: none;
-      color: #007bff;
-      font-size: 18px;
-      font-weight: 500;
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    .split-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
     }
-
-    .form-section {
-      padding: 40px;
-      background-color: #ffffff;
-      max-width: 800px;
-      margin: 30px auto;
-      border-radius: 16px;
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-section h3 {
-      text-align: center;
-      color: #444;
-      font-size: 24px;
-      margin-bottom: 30px;
-    }
-
-    input, select, button, textarea {
-      padding: 15px;
-      margin: 15px 0;
-      width: 96%;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      font-size: 18px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    button {
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      border: none;
-      width: 100%;
-      transition: background-color 0.3s ease;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .map-container {
-      max-width: 1000px;
-      margin: 0 auto 60px;
-    }
-
-    .map-container h3 {
-      text-align: center;
-      color: #444;
-      font-size: 24px;
-      margin-top: 40px;
-      margin-bottom: 20px;
-    }
-
     #map {
-      width: 100%;
-      height: 500px;
-      border-radius: 12px;
+        width: 100%;
+        height: 100%;
+        min-height: 400px;
     }
-
-    @media (max-width: 768px) {
-      .form-section, .map-container {
-        padding: 20px;
-        width: 95%;
-      }
-
-      input, select, button, textarea {
-        font-size: 16px;
-      }
-
-      .center {
-        font-size: 26px;
-      }
+    @media (max-width: 900px) {
+        .split-layout {
+            grid-template-columns: 1fr;
+        }
+        #map {
+            height: 400px;
+        }
     }
-  </style>
-</head>
-<body>
+</style>
+{% endblock %}
 
-  <h2 class="center">Lost and Found Mobile Tracker</h2>
-  <a href="{% url 'home' %}">Back to Home</a>
+{% block content %}
+<div class="glass-card" style="max-width: 1200px;">
+    <h2>Report an Item</h2>
+    <p class="text-center" style="color: var(--text-muted);">Please provide accurate details along with a location to initiate tracking.</p>
+    
+    <div class="split-layout" style="margin-top: 30px;">
+        <div class="form-container">
+            <h3>Details</h3>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn-primary" type="submit" style="margin-top: 20px;">Submit Report</button>
+            </form>
+        </div>
+        
+        <div class="map-container">
+            <h3>Pin Location</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 15px;">Click on the map to autofill the location field.</p>
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-  <div class="form-section">
-    <h3>Report Mobile</h3>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
-  </div>
+{% block extra_scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const centerLatLng = [20.5937, 78.9629];
+        const bounds = L.latLngBounds([6.753515, 68.162386], [35.504222, 97.395561]);
 
-  <div class="map-container">
-    <h3>Mobile Location Map</h3>
-    <div id="map"></div>
-  </div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script>
-    const centerLatLng = [12.9173, 77.5770];
-    const bounds = L.latLngBounds([12.9145, 77.5740], [12.9200, 77.5800]);
-
-    const map = L.map('map', {
-      center: centerLatLng,
-      zoom: 16,
-      maxBounds: bounds,
-      maxBoundsViscosity: 1.0,
-      minZoom: 15,
-      maxZoom: 18
-    });
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19
-    }).addTo(map);
-
-    let marker;
-
-    map.on('click', function (e) {
-      const latlng = e.latlng;
-      if (!bounds.contains(latlng)) return;
-
-      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}`)
-        .then(res => res.json())
-        .then(data => {
-          const locationName = data.display_name;
-          if (marker) {
-            marker.setLatLng(latlng);
-          } else {
-            marker = L.marker(latlng).addTo(map);
-          }
-          marker.bindPopup(locationName).openPopup();
-
-          const locationInput = document.querySelector('input[name="location"]');
-          if (locationInput) {
-            locationInput.value = locationName;
-          }
+        const map = L.map('map', {
+            center: centerLatLng,
+            zoom: 5,
+            maxBounds: bounds,
+            maxBoundsViscosity: 1.0,
+            minZoom: 4,
+            maxZoom: 18
         });
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        let marker;
+
+        map.on('click', function (e) {
+            const latlng = e.latlng;
+            if (!bounds.contains(latlng)) return;
+
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}`)
+                .then(res => res.json())
+                .then(data => {
+                    const locationName = data.display_name;
+                    if (marker) {
+                        marker.setLatLng(latlng);
+                    } else {
+                        marker = L.marker(latlng).addTo(map);
+                    }
+                    marker.bindPopup(locationName).openPopup();
+
+                    const locationInput = document.querySelector('input[name="location_name"]');
+                    const latInput = document.querySelector('input[name="latitude"]');
+                    const lngInput = document.querySelector('input[name="longitude"]');
+                    if (locationInput) locationInput.value = locationName;
+                    if (latInput) latInput.value = latlng.lat;
+                    if (lngInput) lngInput.value = latlng.lng;
+                });
+        });
+
+        const locationInput = document.querySelector('input[name="location_name"]');
+        if (locationInput) {
+            locationInput.addEventListener('change', function () {
+                const query = this.value;
+                if (!query) return;
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            const firstResult = data[0];
+                            const latlng = [firstResult.lat, firstResult.lon];
+                            if (!bounds.contains(latlng)) return;
+
+                            map.setView(latlng, 16);
+                            if (marker) {
+                                marker.setLatLng(latlng);
+                            } else {
+                                marker = L.marker(latlng).addTo(map);
+                            }
+                            marker.bindPopup(firstResult.display_name).openPopup();
+                            
+                            const latInput = document.querySelector('input[name="latitude"]');
+                            const lngInput = document.querySelector('input[name="longitude"]');
+                            if (latInput) latInput.value = firstResult.lat;
+                            if (lngInput) lngInput.value = firstResult.lon;
+                        }
+                    });
+            });
+        }
     });
-
-    window.addEventListener('load', () => {
-      const locationInput = document.querySelector('input[name="location"]');
-      if (!locationInput) return;
-
-      locationInput.addEventListener('change', function () {
-        const query = this.value;
-        fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.length > 0) {
-              const firstResult = data[0];
-              const latlng = [firstResult.lat, firstResult.lon];
-              if (!bounds.contains(latlng)) return;
-
-              map.setView(latlng, 16);
-              if (marker) {
-                marker.setLatLng(latlng);
-              } else {
-                marker = L.marker(latlng).addTo(map);
-              }
-              marker.bindPopup(firstResult.display_name).openPopup();
-            }
-          });
-      });
-    });
-  </script>
-
-</body>
-</html>
+</script>
+{% endblock %}

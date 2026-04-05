@@ -1,8 +1,63 @@
-<!-- tracker/templates/tracker/profile.html -->
-{% include 'tracker/navbar.html' %}
-<div class="container">
-    <h1>{{ user.username }}'s Profile</h1>
-    <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" style="max-width: 150px;">
-    <p>Phone: {{ profile.phone_number }}</p>
-    <p>Address: {{ profile.address }}</p>
+{% extends 'tracker/base.html' %}
+
+{% block title %}Profile | Lost and Found{% endblock %}
+
+{% block content %}
+<div class="glass-card narrow-card text-center">
+    <h2>{{ user.username }}'s Profile</h2>
+    
+    {% if profile.profile_picture %}
+        <div style="margin: 20px auto;">
+            <img src="{{ profile.profile_picture.url }}" alt="Profile Picture" style="width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 3px solid var(--accent-primary); padding: 5px;">
+        </div>
+    {% else %}
+        <div style="margin: 20px auto; width: 150px; height: 150px; border-radius: 50%; background: var(--bg-secondary); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">
+            No Photo
+        </div>
+    {% endif %}
+
+    <div style="margin-top: 30px; text-align: left; background: var(--bg-tertiary); padding: 20px; border-radius: 6px; border: 1px solid var(--border-color);">
+        <p style="margin-bottom: 10px;"><strong>Phone:</strong> <span style="float: right;">{{ profile.phone_number|default:"Not provided" }}</span></p>
+        <p style="margin-bottom: 0;"><strong>Address:</strong> <span style="float: right;">{{ profile.address|default:"Not provided" }}</span></p>
+    </div>
+
+    <div style="margin-top: 40px; text-align: left;">
+        <h3 style="margin-bottom: 20px; font-size: 1.25rem;">Your Reports</h3>
+        <div class="results-grid" style="grid-template-columns: 1fr; gap: 12px; display: grid;">
+            {% for report in my_reports %}
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="color: var(--text-main);">{{ report.title }}</strong>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">{{ report.get_category_display }} • {{ report.date_reported|date:"M d" }}</div>
+                </div>
+                <span class="status-badge" style="padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; background: var(--bg-tertiary); border: 1px solid var(--border-color);">
+                    {{ report.get_status_display }}
+                </span>
+            </div>
+            {% empty %}
+            <p style="color: var(--text-muted); font-style: italic;">You haven't reported any items yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; text-align: left;">
+        <h3 style="margin-bottom: 20px; font-size: 1.25rem;">Received Messages</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            {% for msg in received_msgs %}
+            <div style="background: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: 6px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <strong style="color: var(--accent-primary);">From: {{ msg.sender.username }}</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">{{ msg.timestamp|timesince }} ago</span>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 8px;">{{ msg.body }}</div>
+                {% if msg.item %}
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Regarding: <strong>{{ msg.item.title }}</strong></div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p style="color: var(--text-muted); font-style: italic;">No messages received yet.</p>
+            {% endfor %}
+        </div>
+    </div>
 </div>
+{% endblock %}

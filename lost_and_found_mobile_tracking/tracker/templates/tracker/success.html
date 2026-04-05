@@ -1,37 +1,26 @@
-<!-- tracker/templates/tracker/success.html -->
-{% include 'tracker/navbar.html' %}
-<div class="container">
-    <h2>Thank you!</h2>
-    <p>Your report has been submitted successfully.</p>
+{% extends 'tracker/base.html' %}
 
-    {% if report.photo %}
-        <h3>Mobile Photo:</h3>
-        <img src="{{ report.photo.url }}" alt="Mobile Photo" style="max-width: 300px;">
+{% block title %}Success | Lost and Found{% endblock %}
+
+{% block content %}
+<div class="glass-card narrow-card text-center" style="padding-top: 50px; padding-bottom: 50px;">
+    
+    <div style="font-size: 4rem; color: var(--success-color); margin-bottom: 20px;">
+        ✓
+    </div>
+    
+    <h2 style="color: var(--text-main);">Thank you!</h2>
+    <p>Your report has been submitted successfully and the system has been updated.</p>
+
+    {% if report and report.photo %}
+        <div style="margin: 30px auto;">
+            <h4 style="margin-bottom: 15px; color: var(--text-muted);">Attached Image:</h4>
+            <img src="{{ report.photo.url }}" alt="Item Photo" style="max-width: 100%; border-radius: 6px; border: 1px solid var(--border-color);">
+        </div>
     {% endif %}
 
-    <a class="btn" href="{% url 'home' %}">Return to Home</a>
+    <div style="margin-top: 40px;">
+        <a class="btn-primary" href="{% url 'home' %}">Return to Home</a>
+    </div>
 </div>
-
-<style>
-    .container {
-        text-align: center;
-        margin: 50px auto;
-    }
-
-    h2 {
-        color: #28a745;
-        font-size: 1.5em;
-    }
-
-    .btn {
-        background-color: #007BFF;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
-
-    .btn:hover {
-        background-color: #0056b3;
-    }
-</style>
+{% endblock %}

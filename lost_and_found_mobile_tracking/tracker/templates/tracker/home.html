@@ -1,88 +1,113 @@
-{% include 'tracker/navbar.html' %}
-<div class="container">
-    <h1>Welcome to Lost & Found Mobile Tracker</h1>
-    <p>Use this system to report or search for lost and found mobile phones.</p>
-    <a class="btn" href="{% url 'report_mobile' %}">Report a Mobile</a>
-    <a class="btn" href="{% url 'search_reports' %}">Search Reports</a>
-</div>
+{% extends 'tracker/base.html' %}
 
+{% block title %}Home | Lost and Found{% endblock %}
+
+{% block extra_head %}
 <style>
-    /* General Reset */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    /* Body Styles */
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        color: #333;
-        line-height: 1.6;
-    }
-
-    /* Container Style */
-    .container {
+    .hero-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 0 60px 0;
         text-align: center;
-        margin-top: 80px;
-        padding: 20px;
-        background-color: #ffffff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    /* Heading Styles */
-    h1 {
-        font-size: 2.5em;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 20px;
-    }
-
-    /* Paragraph Style */
-    p {
-        font-size: 1.2em;
-        color: #555;
+        border-bottom: 1px solid var(--border-color);
         margin-bottom: 40px;
     }
 
-    /* Button Styles */
-    .btn {
-        display: inline-block;
-        padding: 15px 30px;
-        font-size: 1.2em;
-        margin: 15px 20px;
-        background-color: #007BFF;
-        color: white;
-        text-decoration: none;
-        border-radius: 8px;
-        transition: background-color 0.3s ease, transform 0.3s ease;
+    .hero-section h1 {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        color: var(--text-main);
     }
 
-    .btn:hover {
-        background-color: #0056b3;
-        transform: scale(1.05);
+    .hero-section p {
+        font-size: 1.125rem;
+        max-width: 600px;
+        margin-bottom: 32px;
+        color: var(--text-muted);
     }
 
-    .btn:active {
-        background-color: #00408d;
+    .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+        margin-bottom: 60px;
     }
 
-    /* Mobile Responsiveness */
-    @media (max-width: 768px) {
-        .container {
-            margin-top: 50px;
-            padding: 15px;
-        }
+    .feature-card {
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        padding: 32px;
+        text-align: left;
+    }
 
-        h1 {
-            font-size: 2em;
-        }
+    .feature-icon {
+        width: 48px;
+        height: 48px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+    }
 
-        .btn {
-            font-size: 1em;
-            padding: 12px 25px;
-        }
+    .feature-icon svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--accent-primary);
+        stroke-width: 2;
+        fill: none;
+    }
+
+    .feature-card h3 {
+        font-size: 1.25rem;
+        margin-bottom: 12px;
+    }
+
+    .feature-card p {
+        font-size: 0.95rem;
+        margin-bottom: 0;
     }
 </style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <h1>Lost and Found</h1>
+    <p>A secure platform to log found items and track lost belongings. Core features include native mapping, automated categorical matching, and secure direct user messaging.</p>
+    
+    <div class="button-group center">
+        <a class="btn-primary" href="{% url 'report_item' %}">Report an Item</a>
+        <a class="btn-secondary" href="{% url 'search_reports' %}">Search Database</a>
+    </div>
+</div>
+
+<div class="feature-grid">
+    <div class="feature-card">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path></svg>
+        </div>
+        <h3>Universal Reporting</h3>
+        <p>Log any item including electronics, wallets, and documents. Use precise geolocation to drop pins exactly where items were lost or found.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <h3>Automated Matching</h3>
+        <p>Our background service automatically scans active reports. When a matching category is logged within a 10km radius, both users receive immediate alerts.</p>
+    </div>
+    
+    <div class="feature-card">
+        <div class="feature-icon">
+            <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+        </div>
+        <h3>Secure Internal Messaging</h3>
+        <p>Eliminate the need to publicly post phone numbers. Utilize our encrypted internal messaging system to securely coordinate item retrieval.</p>
+    </div>
+</div>
+{% endblock %}
