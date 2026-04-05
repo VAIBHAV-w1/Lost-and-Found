@@ -16,9 +16,7 @@
         padding: 20px;
         border-radius: 12px;
         text-align: center;
-        transition: transform 0.2s ease;
     }
-    .stat-card:hover { transform: translateY(-3px); }
     .stat-value {
         display: block;
         font-size: 1.75rem;
@@ -45,7 +43,6 @@
         background: var(--bg-secondary);
         border: 1px solid var(--border-color);
         position: relative;
-        animation: fadeIn 0.4s ease-out forwards;
     }
     .chat-bubble.received {
         align-self: flex-start;
@@ -137,7 +134,7 @@
         </h3>
         <div style="display: grid; gap: 15px;">
             {% for report in my_reports %}
-            <div class="animate-fade" style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: var(--bg-tertiary); border: 1px solid var(--border-color); padding: 18px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <strong style="color: var(--text-main); font-size: 1.05rem;">{{ report.title }}</strong>
                     <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">{{ report.get_category_display }} • Reported on {{ report.date_reported|date:"M d" }}</div>

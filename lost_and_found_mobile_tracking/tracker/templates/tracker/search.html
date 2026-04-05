@@ -38,7 +38,6 @@
         padding: 24px;
         display: flex;
         flex-direction: column;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .result-card h4 {
@@ -115,7 +114,7 @@
         <h3>Recent Reports</h3>
         <div class="results-grid" style="margin-top: 24px;">
         {% for report in results %}
-            <div class="result-card hover-lift animate-fade">
+            <div class="result-card hover-lift">
                 <h4>{{ report.title }}</h4>
                 <div class="result-item"><strong>Category:</strong> {{ report.get_category_display }}</div>
                 <div class="result-item">
